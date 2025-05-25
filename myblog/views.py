@@ -1,32 +1,34 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from .models import CreateBlog, Comment
 from .forms import BlogForm
 
-class List(ListView):
-    template_name = 'myblog/index.html'
-    queryset = CreateBlog.objects.all()
+class PostListView(ListView):
+    model = CreateBlog
+    template_name = 'myblog/frontpage.html'
+    context_object_name = 'posts'
     paginate_by = 3
 
-
-def detailView(request, slug):
-    post = CreateBlog.objects.get(slug=slug)
+def post_detail(request, slug):
+    post = get_object_or_404(CreateBlog, slug=slug)
     comments = post.comments.all()
+    
     if request.method == 'POST':
         form = BlogForm(request.POST)
         if form.is_valid():
-            form.save(commit=False)
-            form.instance.post = post
-            form.save()
-            return redirect('detailView', slug=post.slug)
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('post_detail', slug=post.slug)
     else:
         form = BlogForm()
 
-    content = {
-        'article':post,
-        'comments':comments,
-        'form':form,
-
+    context = {
+        'post': post,
+        'comments': comments,
+        'form': form,
     }
-    return render(request, 'myblog/update.html', content)
+    return render(request, 'myblog/post_detail.html', context)
      

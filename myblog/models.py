@@ -12,6 +12,9 @@ class CreateBlog(models.Model):
     class Meta:
         ordering = ['-date_added'] # les plus recents en premier
 
+    def __str__(self):
+        return self.title
+
 class Comment(models.Model):
     post = models.ForeignKey(CreateBlog, related_name='comments', on_delete=models.CASCADE)
     email = models.EmailField()

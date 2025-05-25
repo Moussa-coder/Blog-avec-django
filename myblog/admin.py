@@ -1,11 +1,15 @@
 from django.contrib import admin
 from .models import CreateBlog, Comment
-# Register your models here.
-class BlogAdmin(admin.ModelAdmin):
-    list_display = ('title', 'intro', 'slug', 'date_added')
-    
-class CommentAdmin(admin.ModelAdmin):
-    list_display = ('body', 'email', 'date_added')
 
-admin.site.register(CreateBlog, BlogAdmin)
-admin.site.register(Comment, CommentAdmin)
+@admin.register(CreateBlog)
+class CreateBlogAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'date_added')
+    list_filter = ('date_added',)
+    search_fields = ('title', 'intro', 'body')
+    prepopulated_fields = {'slug': ('title',)}
+
+@admin.register(Comment)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'post', 'date_added')
+    list_filter = ('date_added',)
+    search_fields = ('name', 'email', 'body')

@@ -1,55 +1,62 @@
 {% extends 'myblog/base.html' %}
+{% load static %}
 
 {% block title %}{{ post.title }} - Mon Blog{% endblock %}
 
+{% block extra_css %}
+<link href="{% static 'css/post_detail.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
-    <article class="mb-5">
-        <h1>{{ post.title }}</h1>
-        <p class="text-muted">Publié le {{ post.date_added|date:"d/m/Y" }}</p>
+    <article>
+        <header class="post-header">
+            <h1>{{ post.title }}</h1>
+            <p class="post-meta">Publié le {{ post.date_added|date:"d/m/Y" }}</p>
+        </header>
         
         {% if post.image %}
-            <img src="{{ post.image.url }}" class="img-fluid mb-4" alt="{{ post.title }}">
+            <img src="{{ post.image.url }}" class="post-image" alt="{{ post.title }}">
         {% endif %}
         
-        <div class="mb-4">
+        <div class="post-content">
             {{ post.body|linebreaks }}
         </div>
     </article>
 
-    <section class="comments mb-5">
+    <section class="comments-section">
         <h2>Commentaires</h2>
         
         {% for comment in comments %}
-            <div class="card mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">{{ comment.name }}</h5>
-                    <p class="card-text">{{ comment.body }}</p>
-                    <p class="text-muted">Le {{ comment.date_added|date:"d/m/Y" }}</p>
+            <div class="comment">
+                <div class="comment-header">
+                    <span class="comment-author">{{ comment.name }}</span>
+                    <span class="comment-date">Le {{ comment.date_added|date:"d/m/Y" }}</span>
+                </div>
+                <div class="comment-body">
+                    {{ comment.body }}
                 </div>
             </div>
         {% empty %}
             <p>Aucun commentaire pour le moment.</p>
         {% endfor %}
 
-        <div class="card">
-            <div class="card-body">
-                <h3>Ajouter un commentaire</h3>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                            {{ field }}
-                            {% if field.errors %}
-                                <div class="alert alert-danger">
-                                    {{ field.errors }}
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
-                </form>
-            </div>
+        <div class="comment-form">
+            <h3>Ajouter un commentaire</h3>
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                            <div class="alert alert-danger">
+                                {{ field.errors }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </form>
         </div>
     </section>
 {% endblock %} 

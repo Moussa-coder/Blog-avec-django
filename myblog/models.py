@@ -6,7 +6,8 @@ class CreateBlog(models.Model):
     slug = models.SlugField(max_length=200) # pour les urls
     intro = models.TextField()
     body = models.TextField()
-    image = models.ImageField(upload_to='media',)
+    image = models.ImageField(upload_to='media', null=True, blank=True)
+    video = models.FileField(upload_to='videos/', null=True, blank=True, help_text="Formats acceptés : MP4, WebM, Ogg")
     date_added = models.DateTimeField(auto_now_add=True)
  
     class Meta:

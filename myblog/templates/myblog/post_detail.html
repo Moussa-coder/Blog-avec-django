@@ -8,6 +8,12 @@
 {% endblock %}
 
 {% block content %}
+    <div class="mb-4">
+        <a href="{% url 'frontpage' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left"></i> Retour à l'accueil
+        </a>
+    </div>
+
     <article>
         <header class="post-header">
             <h1>{{ post.title }}</h1>
@@ -16,6 +22,15 @@
         
         {% if post.image %}
             <img src="{{ post.image.url }}" class="post-image" alt="{{ post.title }}">
+        {% endif %}
+
+        {% if post.video %}
+            <div class="video-container mb-4">
+                <video class="post-video" controls>
+                    <source src="{{ post.video.url }}" type="video/mp4">
+                    Votre navigateur ne supporte pas la lecture de vidéos.
+                </video>
+            </div>
         {% endif %}
         
         <div class="post-content">
